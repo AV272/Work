@@ -1,7 +1,9 @@
 #include <TLatex.h>
+#include <TMath.h>
 
 
-void difcs() {
+void difcs() 
+{
    auto c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
    //c1->SetFillColor(42);
    c1->SetGrid();
@@ -55,7 +57,7 @@ void difcs() {
          theta[j] = theta0;
          
          // Translation angles to the center mass system
-         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m_1, m_2, m_3, m_4;
+         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m_1, m_2, m_3, m_4, chi, s;
          
          m_1 = m_2 = 1875.61*pow(10,3); // deuterium MeV
          m_3 = 2808.92*pow(10,3); // He3
@@ -64,15 +66,15 @@ void difcs() {
          s = pow((m_1 + m_2),2) + 2*m_1*Ed[i];
          p_cm = sqrt((pow((s - m_3*m_3 -m_4*m_4),2) - 4*m_3*m_3*m_4*m_4)/(4*s));
          chi = log((p_cm + sqrt(m_1*m_1 + p_cm*p_cm))/m_1);
-         gamma_cm = CosH(chi);
+         gamma_cm = TMath::CosH(chi);
          beta_cm = sqrt(1-1/(gamma_cm*gamma_cm));
          E_cm = p_cm/beta_cm;
          
 
          cos_th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*sin(theta0)+\
-         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*beta_cm*beta_cm*sin(theta0)*sin(theta0))/\
+         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
          (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
-         th_cm = ACos(cos_th_cm);
+         th_cm = TMath::ACos(cos_th_cm);
 
          Double_t th = (3.1415926*th_cm)/180;
          dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4)+0.1*i - 0.2;
