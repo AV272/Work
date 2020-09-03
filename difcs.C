@@ -53,7 +53,28 @@ void difcs() {
          
          Double_t theta0 = j*10 +20;
          theta[j] = theta0;
-         Double_t th = (3.1415926*theta0)/180;
+         
+         // Translation angles to the center mass system
+         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m_1, m_2, m_3, m_4;
+         
+         m_1 = m_2 = 1875.61*pow(10,3); // deuterium MeV
+         m_3 = 2808.92*pow(10,3); // He3
+         m_4 = 939.565*pow(10,3); // n
+         
+         s = pow((m_1 + m_2),2) + 2*m_1*Ed[i];
+         p_cm = sqrt((pow((s - m_3*m_3 -m_4*m_4),2) - 4*m_3*m_3*m_4*m_4)/(4*s));
+         chi = log((p_cm + sqrt(m_1*m_1 + p_cm*p_cm))/m_1);
+         gamma_cm = CosH(chi);
+         beta_cm = sqrt(1-1/(gamma_cm*gamma_cm));
+         E_cm = p_cm/beta_cm;
+         
+
+         cos_th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*sin(theta0)+\
+         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*beta_cm*beta_cm*sin(theta0)*sin(theta0))/\
+         (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
+         th_cm = ACos(cos_th_cm);
+
+         Double_t th = (3.1415926*th_cm)/180;
          dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4)+0.1*i - 0.2;
          dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
          edcsn[j] = pow(cos(th),2)*eAn[i] + pow(cos(th),4)*eBn[i] +\
@@ -61,21 +82,6 @@ void difcs() {
          edcsp[j] = pow(cos(th),2)*eAp[i] + pow(cos(th),4)*eBp[i] +\
          Ap[i]*2*cos(th)*sin(th)*dth + Bp[i]*4*pow(cos(th),3)*sin(th)*dth;
          
-         
-         // Translation angles to the center mass system
-         Double_t th_cm, beta_cm, gamma_cm, E_cm, p_cm, m;
-         chi = log((p_cm + sqrt(m_1*m_1 + p_cm*p_cm))/m_1);
-         beta_cm = sqrt(1-1/(gamma_cm*gamma_cm));
-         gamma_cm = CosH(chi); 
-         E_cm =
-         p_cm = sqrt((pow((s - m_3*m_3 -m_4*m_4),2) - 4*m_3*m_3*m_4*m_4)/(4*s));
-         m = 
-
-         th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*sin(theta0)+\
-         abs(cos(theta0))*sqrt(p_cm*p_cm - m*m*gamma_cm*gamma_cm*beta_cm*beta_cm*sin(theta0)*sin(theta0))/\
-         (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)))
-
-
       }
 
       if ((i==0)||(i==2)){continue;}
