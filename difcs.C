@@ -1,10 +1,6 @@
 #include <TLatex.h>
 #include <TMath.h>
 
-// Change #1
-// Change #2
-// Change #3
-
 void difcs() 
 {
    auto c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
@@ -44,7 +40,9 @@ void difcs()
    Double_t theta[nn];
    Double_t edcsn[nn];
    Double_t edcsp[nn];
+   Double_t theta_cm[nn];
    Double_t dth = (3.1415926*0.5)/180;
+
    TString g_name;
 
 
@@ -57,7 +55,9 @@ void difcs()
          
          
          Double_t theta0 = j*10 +20;
+         printf("Theta00_%f\n", theta0);
          theta[j] = theta0;
+         theta0 = (3.1415926*theta0)/180;
          
          // Translation angles to the center mass system
          Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m_1, m_2, m_3, m_4, chi, s;
@@ -66,20 +66,44 @@ void difcs()
          m_3 = 2808.92*pow(10,3); // He3
          m_4 = 939.565*pow(10,3); // n
          
+         printf("######################%i %i########################\n", i,j);
          s = pow((m_1 + m_2),2) + 2*m_1*Ed[i];
+         printf("S_%f\n",s);
          p_cm = sqrt((pow((s - m_3*m_3 -m_4*m_4),2) - 4*m_3*m_3*m_4*m_4)/(4*s));
+         printf("p_cm_%f\n",p_cm);
          chi = log((p_cm + sqrt(m_1*m_1 + p_cm*p_cm))/m_1);
+         printf("chi_%f\n",chi);
          gamma_cm = TMath::CosH(chi);
+         printf("gamma_cm_%f\n",gamma_cm);
          beta_cm = sqrt(1-1/(gamma_cm*gamma_cm));
+         printf("beta_cm_%f\n",beta_cm);
          E_cm = p_cm/beta_cm;
+         printf("E_cm_%f\n",E_cm);
          
 
-         cos_th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*sin(theta0)+\
-         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
+         cos_th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*pow(sin(theta0),2)+\
+         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*\
+         beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
          (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
-         th_cm = TMath::ACos(cos_th_cm);
+         printf("cos_th_cm_%f\n",cos_th_cm);
 
-         Double_t th = (3.1415926*th_cm)/180;
+         th_cm = TMath::ACos(cos_th_cm);
+         printf("Theta_cm_%f\n",th_cm);
+         Double_t th_cm_deg = 180*th_cm/3.1415926;
+         theta_cm[j] = th_cm_deg; 
+         printf("Theta_cm_degrees_%f\n", th_cm_deg);
+
+         cos_th_cm_2 = ((-beta_cm)*pow(gamma_cm,2)*E_cm*pow(sin(theta0),2)-\
+         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*\
+         beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
+         (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
+
+         
+         printf("Theta0_%f\n", theta0);
+         ////////////////////////////////////////////////////////
+
+         //Double_t th = (3.1415926*th_cm)/180;
+         Double_t th = th_cm;
          dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4)+0.1*i - 0.2;
          dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
          edcsn[j] = pow(cos(th),2)*eAn[i] + pow(cos(th),4)*eBn[i] +\
@@ -90,7 +114,7 @@ void difcs()
       }
 
       if ((i==0)||(i==2)){continue;}
-      auto dcsng = new TGraphErrors(nn,theta,dcsn,0,edcsn);
+      auto dcsng = new TGraphErrors(nn,theta_cm,dcsn,0,edcsn);
       //dcsng->SetTitle("Differential cross-section / angle");
       dcsng->SetMarkerColor(4);
       dcsng->SetMarkerStyle(21);
