@@ -36,12 +36,17 @@ void difcs()
 
    const Int_t nn=15;
    Double_t dcsn[nn];
+   Double_t dcsn2[nn];
    Double_t dcsp[nn];
    Double_t theta[nn];
    Double_t edcsn[nn];
+   Double_t edcsn2[nn];
    Double_t edcsp[nn];
-   Double_t theta_cm[nn];
+   Double_t theta_cm[nn], theta_cm2[nn];
    Double_t dth = (3.1415926*0.5)/180;
+
+   const Int_t nnn =30;
+   Double_t dcsn_cm_all[nnn], theta_cm_all[nnn], edcsn_cm_all[nnn];
 
    TString g_name;
 
@@ -55,54 +60,88 @@ void difcs()
          
          
          Double_t theta0 = j*10 +20;
-         printf("Theta00_%f\n", theta0);
          theta[j] = theta0;
+         
          theta0 = (3.1415926*theta0)/180;
          
          // Translation angles to the center mass system
          // Input parameters: m1, m2, m3, m4 -- particles masses; Ed[] -- kinetic energy of deutron
          // in lab system; theta[] -- laboratory scattering angle of particle 3. 
-         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m1, m2, m3, m4, chi, s;
+         Double_t th, m1, m2, m3, m4, E1, E_cmT, p1, check, E_cm4, alfa, E3, E3_2, ET;
+         Double_t th_cm =0, th_cm2 =0;
          
-         m_1 = m_2 = 1875.61*pow(10,3); // deuterium MeV
-         m_3 = 2808.92*pow(10,3); // He3
-         m_4 = 939.565*pow(10,3); // n
-         
-
-
+         m1 = m2 = 1875.61*pow(10,3); // deuterium MeV
+         m3 = 2808.92*pow(10,3); // He3
+         m4 = 939.565*pow(10,3); // n
+         th = theta0;
 
          E1 = Ed[i] + m1;
+         ET = E1 + m2;
+         p1 = sqrt(E1*E1 - m1*m1);
          E_cmT = sqrt(m1*m1 + m2*m2 + 2*m2*E1);
+         check = pow(m2*E1 + (m1*m1 + m2*m2 - m3*m3 -m4*m4)/2,2) - pow(m3*m4,2) - pow(p1*m3*sin(th),2);
+         E_cm4 = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
+         p_cm = sqrt(E_cm4*E_cm4 - m4*m4 );
 
          // alfa determines if there two or one solutions for E3
          alfa = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
          (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))(1-pow((m3-m4)/E_cmT,2))));
          if (alfa>1){
+            E3 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2) + p1*cos(th)*sqrt(check))/\
+            (ET*ET - pow(p1*cos(th),2));
+            E3_2 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2) - p1*cos(th)*sqrt(check))/\
+            (ET*ET - pow(p1*cos(th),2));
+            p3 = sqrt(E3*E3 - m3*m3);
+            sin_cm = p3*sin(th)/p_cm;
+            p3_2 = sqrt(E3_2*E3_2 - m3*m3);
+            sin_cm_2 = p3_2*sin(th)/p_cm;
+            th_cm = TMath::ASin(sin_cm);
+            th_cm2 = TMath::ASin(sin_cm_2);
+            theta_cm[j] = 180*th_cm/3.1415926;
+            theta_cm2[j] = 180*th_cm2/3.1415926;
+
+            dcsn[j]  = 1 + An[i]*pow(cos(th_cm),2) + Bn[i]*pow(cos(th_cm),4)+0.1*i - 0.2;
+            edcsn[j] = pow(cos(th_cm),2)*eAn[i] + pow(cos(th_cm),4)*eBn[i] +\
+            An[i]*2*cos(th_cm)*sin(th_cm)*dth + Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth;
+
+            dcsn2[j]  = 1 + An[i]*pow(cos(th_cm2),2) + Bn[i]*pow(cos(th_cm2),4)+0.1*i - 0.2;
+            edcsn2[j] = pow(cos(th_cm2),2)*eAn[i] + pow(cos(th_cm2),4)*eBn[i] +\
+            An[i]*2*cos(th_cm2)*sin(th_cm2)*dth + Bn[i]*4*pow(cos(th_cm2),3)*sin(th_cm2)*dth;
 
          } else {
+            E3 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2) + p1*cos(th)*sqrt(check))/\
+            (ET*ET - pow(p1*cos(th),2));
+            p3 = sqrt(E3*E3 - m3*m3);
+            sin_cm = p3*sin(th)/p_cm;
+            th_cm = TMath::ASin(sin_cm);
+            theta_cm[j] = 180*th_cm/3.1415926;
 
+            dcsn[j]  = 1 + An[i]*pow(cos(th_2),2) + Bn[i]*pow(cos(th_2),4)+0.1*i - 0.2;
+            dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
+            edcsn[j] = pow(cos(th_cm),2)*eAn[i] + pow(cos(th_cm),4)*eBn[i] +\
+            An[i]*2*cos(th_cm)*sin(th_cm)*dth + Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth;
+            edcsp[j] = pow(cos(th),2)*eAp[i] + pow(cos(th),4)*eBp[i] +\
+            Ap[i]*2*cos(th)*sin(th)*dth + Bp[i]*4*pow(cos(th),3)*sin(th)*dth;
          }
-         E3 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2))
          
-         E_cm4 = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
-         p_cm = sqrt(E_cm4*E_cm4 - m4*m4 );
-         p3 = sqrt(E3*E3 - m3*m3);
-         sin_cm = p3*sin_3/p_cm;
-         ////////////////////////////////////////////////////////
-
-         //Double_t th = (3.1415926*th_cm)/180;
-         Double_t th = th_cm;
-         dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4)+0.1*i - 0.2;
-         dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
-         edcsn[j] = pow(cos(th),2)*eAn[i] + pow(cos(th),4)*eBn[i] +\
-         An[i]*2*cos(th)*sin(th)*dth + Bn[i]*4*pow(cos(th),3)*sin(th)*dth;
-         edcsp[j] = pow(cos(th),2)*eAp[i] + pow(cos(th),4)*eBp[i] +\
-         Ap[i]*2*cos(th)*sin(th)*dth + Bp[i]*4*pow(cos(th),3)*sin(th)*dth;
-         
+         ////////////////////////////////////////////////////////////////////////
       }
 
       if ((i==0)||(i==2)){continue;}
-      auto dcsng = new TGraphErrors(nn,theta_cm,dcsn,0,edcsn);
+
+      for (int k =0; k< nnn; k++){
+         if (nnn<15){
+            dcsn_cm_all[nnn] = dcsn[nnn];
+            edcsn_cm_all[nnn] = edcsn[nnn];
+            theta_cm_all[nnn] = theta_cm[nnn];
+         } else {
+            dcsn_cm_all[nnn] = dcsn2[nnn];
+            edcsn_cm_all[nnn] = edcsn2[nnn];
+            theta_cm_all[nnn] = theta_cm2[nnn];
+         }
+         
+      }
+      auto dcsng = new TGraphErrors(nnn,theta_cm_all,dcsn_cm_all,0,edcsn_cm_all);
       //dcsng->SetTitle("Differential cross-section / angle");
       dcsng->SetMarkerColor(4);
       dcsng->SetMarkerStyle(21);
