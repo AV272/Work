@@ -60,46 +60,34 @@ void difcs()
          theta0 = (3.1415926*theta0)/180;
          
          // Translation angles to the center mass system
-         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m_1, m_2, m_3, m_4, chi, s;
+         // Input parameters: m1, m2, m3, m4 -- particles masses; Ed[] -- kinetic energy of deutron
+         // in lab system; theta[] -- laboratory scattering angle of particle 3. 
+         Double_t th_cm, cos_th_cm, beta_cm, gamma_cm, E_cm, p_cm, m1, m2, m3, m4, chi, s;
          
          m_1 = m_2 = 1875.61*pow(10,3); // deuterium MeV
          m_3 = 2808.92*pow(10,3); // He3
          m_4 = 939.565*pow(10,3); // n
          
-         printf("######################%i %i########################\n", i,j);
-         s = pow((m_1 + m_2),2) + 2*m_1*Ed[i];
-         printf("S_%f\n",s);
-         p_cm = sqrt((pow((s - m_3*m_3 -m_4*m_4),2) - 4*m_3*m_3*m_4*m_4)/(4*s));
-         printf("p_cm_%f\n",p_cm);
-         chi = log((p_cm + sqrt(m_1*m_1 + p_cm*p_cm))/m_1);
-         printf("chi_%f\n",chi);
-         gamma_cm = TMath::CosH(chi);
-         printf("gamma_cm_%f\n",gamma_cm);
-         beta_cm = sqrt(1-1/(gamma_cm*gamma_cm));
-         printf("beta_cm_%f\n",beta_cm);
-         E_cm = p_cm/beta_cm;
-         printf("E_cm_%f\n",E_cm);
+
+
+
+         E1 = Ed[i] + m1;
+         E_cmT = sqrt(m1*m1 + m2*m2 + 2*m2*E1);
+
+         // alfa determines if there two or one solutions for E3
+         alfa = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
+         (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))(1-pow((m3-m4)/E_cmT,2))));
+         if (alfa>1){
+
+         } else {
+
+         }
+         E3 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2))
          
-
-         cos_th_cm = ((-beta_cm)*pow(gamma_cm,2)*E_cm*pow(sin(theta0),2)+\
-         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*\
-         beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
-         (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
-         printf("cos_th_cm_%f\n",cos_th_cm);
-
-         th_cm = TMath::ACos(cos_th_cm);
-         printf("Theta_cm_%f\n",th_cm);
-         Double_t th_cm_deg = 180*th_cm/3.1415926;
-         theta_cm[j] = th_cm_deg; 
-         printf("Theta_cm_degrees_%f\n", th_cm_deg);
-
-         cos_th_cm_2 = ((-beta_cm)*pow(gamma_cm,2)*E_cm*pow(sin(theta0),2)-\
-         abs(cos(theta0))*sqrt(p_cm*p_cm - m_3*m_3*gamma_cm*gamma_cm*\
-         beta_cm*beta_cm*sin(theta0)*sin(theta0)))/\
-         (p_cm*gamma_cm*gamma_cm*(1-beta_cm*beta_cm*cos(theta0)*cos(theta0)));
-
-         
-         printf("Theta0_%f\n", theta0);
+         E_cm4 = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
+         p_cm = sqrt(E_cm4*E_cm4 - m4*m4 );
+         p3 = sqrt(E3*E3 - m3*m3);
+         sin_cm = p3*sin_3/p_cm;
          ////////////////////////////////////////////////////////
 
          //Double_t th = (3.1415926*th_cm)/180;
