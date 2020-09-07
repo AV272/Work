@@ -67,7 +67,8 @@ void difcs()
          // Translation angles to the center mass system
          // Input parameters: m1, m2, m3, m4 -- particles masses; Ed[] -- kinetic energy of deutron
          // in lab system; theta[] -- laboratory scattering angle of particle 3. 
-         Double_t th, m1, m2, m3, m4, E1, E_cmT, p1, check, E_cm4, alfa, E3, E3_2, ET;
+         Double_t th, m1, m2, m3, m4, E1, E_cmT, p1, check, E_cm4, alpha, E3, E3_2, ET,\
+         p_cm, p3, sin_cm, p3_2, sin_cm_2, th_2;
          Double_t th_cm =0, th_cm2 =0;
          
          m1 = m2 = 1875.61*pow(10,3); // deuterium MeV
@@ -83,20 +84,24 @@ void difcs()
          E_cm4 = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
          p_cm = sqrt(E_cm4*E_cm4 - m4*m4 );
 
-         // alfa determines if there two or one solutions for E3
-         alfa = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
-         (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))(1-pow((m3-m4)/E_cmT,2))));
-         if (alfa>1){
+         // alpha determines if there two or one solutions for E3
+         alpha = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
+         (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))*(1-pow((m3-m4)/E_cmT,2))));
+         if (alpha>1){
             E3 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2) + p1*cos(th)*sqrt(check))/\
             (ET*ET - pow(p1*cos(th),2));
             E3_2 = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2) - p1*cos(th)*sqrt(check))/\
             (ET*ET - pow(p1*cos(th),2));
             p3 = sqrt(E3*E3 - m3*m3);
             sin_cm = p3*sin(th)/p_cm;
+
             p3_2 = sqrt(E3_2*E3_2 - m3*m3);
             sin_cm_2 = p3_2*sin(th)/p_cm;
+
             th_cm = TMath::ASin(sin_cm);
+            printf("Theta_cm_%f\n",th_cm);
             th_cm2 = TMath::ASin(sin_cm_2);
+            printf("Theta_cm_222%f\n",th_cm2);
             theta_cm[j] = 180*th_cm/3.1415926;
             theta_cm2[j] = 180*th_cm2/3.1415926;
 
@@ -114,9 +119,10 @@ void difcs()
             p3 = sqrt(E3*E3 - m3*m3);
             sin_cm = p3*sin(th)/p_cm;
             th_cm = TMath::ASin(sin_cm);
+            printf("Theta_cm_alpha<1__%f\n",180*th_cm/3.1415926);
             theta_cm[j] = 180*th_cm/3.1415926;
 
-            dcsn[j]  = 1 + An[i]*pow(cos(th_2),2) + Bn[i]*pow(cos(th_2),4)+0.1*i - 0.2;
+            dcsn[j]  = 1 + An[i]*pow(cos(th_cm),2) + Bn[i]*pow(cos(th_cm),4)+0.1*i - 0.2;
             dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
             edcsn[j] = pow(cos(th_cm),2)*eAn[i] + pow(cos(th_cm),4)*eBn[i] +\
             An[i]*2*cos(th_cm)*sin(th_cm)*dth + Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth;
@@ -129,16 +135,13 @@ void difcs()
 
       if ((i==0)||(i==2)){continue;}
 
-      for (int k =0; k< nnn; k++){
-         if (nnn<15){
-            dcsn_cm_all[nnn] = dcsn[nnn];
-            edcsn_cm_all[nnn] = edcsn[nnn];
-            theta_cm_all[nnn] = theta_cm[nnn];
-         } else {
-            dcsn_cm_all[nnn] = dcsn2[nnn];
-            edcsn_cm_all[nnn] = edcsn2[nnn];
-            theta_cm_all[nnn] = theta_cm2[nnn];
-         }
+      for (int k =0; k< nn; k++){
+            dcsn_cm_all[k] = dcsn[k];
+            edcsn_cm_all[k] = edcsn[k];
+            theta_cm_all[k] = theta_cm[k] ;
+            dcsn_cm_all[k+15] = dcsn2[k];
+            edcsn_cm_all[k+15] = edcsn2[k];
+            theta_cm_all[k+15] = theta_cm2[k];
          
       }
       auto dcsng = new TGraphErrors(nnn,theta_cm_all,dcsn_cm_all,0,edcsn_cm_all);
