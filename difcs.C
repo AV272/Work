@@ -122,7 +122,7 @@ void difcs()
             printf("Theta_cm_alpha<1__%f\n",180*th_cm/3.1415926);
             theta_cm[j] = 180*th_cm/3.1415926;
 
-            dcsn[j]  = 1 + An[i]*pow(cos(th_cm),2) + Bn[i]*pow(cos(th_cm),4)+0.1*i - 0.2;
+            dcsn[j]  = 1 + An[i]*pow(cos(th_cm),2) + Bn[i]*pow(cos(th_cm),4)+0.1*i - 0.1;
             dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
             edcsn[j] = pow(cos(th_cm),2)*eAn[i] + pow(cos(th_cm),4)*eBn[i] +\
             An[i]*2*cos(th_cm)*sin(th_cm)*dth + Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth;
@@ -139,6 +139,11 @@ void difcs()
             dcsn_cm_all[k] = dcsn[k];
             edcsn_cm_all[k] = edcsn[k];
             theta_cm_all[k] = theta_cm[k] ;
+
+            //if (k >8){
+            //   theta_cm_all[k] = 180 - theta_cm[k] ;
+            //} else { theta_cm_all[k] = theta_cm[k] ;}
+            
             dcsn_cm_all[k+15] = dcsn2[k];
             edcsn_cm_all[k+15] = edcsn2[k];
             theta_cm_all[k+15] = theta_cm2[k];
