@@ -1,13 +1,16 @@
 #include <TLatex.h>
 #include <TMath.h>
+#include "TH2F.h"
 
 void difcs() 
 {
    auto c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
+   TH2F* hpx = new TH2F("hpx","Zoomed Graph Example",100,0.,190.,100,0.,10.);
    //c1->SetFillColor(42);
    c1->SetGrid();
    c1->GetFrame()->SetFillColor(21);
    c1->GetFrame()->SetBorderSize(12);
+   hpx->Draw();
 
    TMultiGraph *mg = new TMultiGraph();
    mg->SetTitle("Angular distribution in ^{2}H(d,n)^{3}He");
@@ -57,8 +60,6 @@ void difcs()
       
       for (int j = 0; j < nn; j++)
       {  
-         
-         
          Double_t theta0 = 2*j;
          theta[j] = theta0;
          
@@ -156,6 +157,7 @@ void difcs()
       dcsng->SetLineColor(i+1);
       g_name.Form("Energy_%f",Ed[i]);
       dcsng->SetTitle(g_name);
+      
       
       mg->Add(dcsng);
       mg->Draw("ACP");
