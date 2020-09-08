@@ -34,7 +34,7 @@ void difcs()
    //mg->Draw();
    //dn->Draw();
 
-   const Int_t nn=15;
+   const Int_t nn=90;
    Double_t dcsn[nn];
    Double_t dcsn2[nn];
    Double_t dcsp[nn];
@@ -45,7 +45,7 @@ void difcs()
    Double_t theta_cm[nn], theta_cm2[nn];
    Double_t dth = (3.1415926*0.5)/180;
 
-   const Int_t nnn =30;
+   const Int_t nnn =2*nn;
    Double_t dcsn_cm_all[nnn], theta_cm_all[nnn], edcsn_cm_all[nnn];
 
    TString g_name;
@@ -59,7 +59,7 @@ void difcs()
       {  
          
          
-         Double_t theta0 = j*10 +20;
+         Double_t theta0 = 2*j;
          theta[j] = theta0;
          
          theta0 = (3.1415926*theta0)/180;
@@ -144,9 +144,9 @@ void difcs()
             //   theta_cm_all[k] = 180 - theta_cm[k] ;
             //} else { theta_cm_all[k] = theta_cm[k] ;}
             
-            dcsn_cm_all[k+15] = dcsn2[k];
-            edcsn_cm_all[k+15] = edcsn2[k];
-            theta_cm_all[k+15] = theta_cm2[k];
+            dcsn_cm_all[k+nn] = dcsn2[k];
+            edcsn_cm_all[k+nn] = edcsn2[k];
+            theta_cm_all[k+nn] = theta_cm2[k];
          
       }
       auto dcsng = new TGraphErrors(nnn,theta_cm_all,dcsn_cm_all,0,edcsn_cm_all);
