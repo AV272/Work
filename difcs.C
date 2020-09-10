@@ -18,6 +18,9 @@ void difcs()
    
    ifstream myfile ("Th66_Data_dsigm[theta_cm]_DdnHe.txt");
 
+   // Put DATA
+   ofstream myfile2;
+
    TMultiGraph *mg = new TMultiGraph();
    mg->SetTitle("Angular distribution in ^{2}H(d,n)^{3}He");
 
@@ -59,6 +62,7 @@ void difcs()
    Double_t dcsn_cm_all[nnn], theta_cm_all[nnn], edcsn_cm_all[nnn];
 
    TString g_name;
+   TString myfile2_name;
 
 
 
@@ -173,8 +177,9 @@ void difcs()
                cout << theta_picture[i2] << endl;
                theta_error_picture[i2] = 0.5;
                Double_t th_cm = theta_picture[i2];
-               dcsn_error_picture[i2] = pow(cos(th_cm),2)*eAn[i] + pow(cos(th_cm),4)*eBn[i] +\
-               An[i]*2*cos(th_cm)*sin(th_cm)*dth + Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth;
+               dcsn_error_picture[i2] = sqrt(pow(pow(cos(th_cm),2)*eAn[i],2) +\
+               pow(pow(cos(th_cm),2)*eAn[i],2) + pow(An[i]*2*cos(th_cm)*sin(th_cm)*dth,2)+\
+               pow(Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth,2));
             }
             for (int i3 =0; i3<num; i3++){
                myfile >> dcsn_picture[i3];
@@ -189,6 +194,16 @@ void difcs()
          
       }
       else {cout << "Unable to open file";} 
+
+      myfile2_name.Form("difsig_%f_n_unpol_Th66.txt",Ed[i]);
+      myfile2.open(myfile2_name);
+      for(int i4=0; i4<num; i4++){
+         myfile2 << theta_picture[i4]<< " "<< theta_error_picture[i4] <<\
+         " "<< dcsn_picture[i4] - 0.1*(Ed[i]/25.) + 0.1<< " "<< dcsn_error_picture[i4] << "\n";
+      } 
+      myfile2.close();
+      
+
 //>>>///////////////////////////////////////////////////////////////////////
 
       auto dcsng = new TGraphErrors(nnn,theta_cm_all,dcsn_cm_all,0,0);
