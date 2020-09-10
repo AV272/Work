@@ -198,13 +198,13 @@ void difcs()
 
       //////////////////PUT DATA IN FILE///////////////////////////////////
 
-      myfile2_name.Form("difsig_%f_n_unpol_Th66.txt",Ed[i]);
-      myfile2.open(myfile2_name);
-      for(int i4=0; i4<num; i4++){
-         myfile2 << theta_picture[i4]<< " "<< theta_error_picture[i4] <<\
-         " "<< dcsn_picture[i4] - 0.1*(Ed[i]/25.) + 0.1<< " "<< dcsn_error_picture[i4] << "\n";
-      } 
-      myfile2.close();
+      //myfile2_name.Form("difsig_%f_n_unpol_Th66.txt",Ed[i]);
+      //myfile2.open(myfile2_name);
+      //for(int i4=0; i4<num; i4++){
+      //   myfile2 << theta_picture[i4]<< " "<< theta_error_picture[i4] <<\
+      //   " "<< dcsn_picture[i4] - 0.1*(Ed[i]/25.) + 0.1<< " "<< dcsn_error_picture[i4] << "\n";
+      //} 
+      //myfile2.close();
       
 
 //>>>///////////////////////////////////////////////////////////////////////
