@@ -171,7 +171,7 @@ void difcs()
             for (int i2 =0; i2<num; i2++){
                // Read theta from file
                myfile >> theta_picture[i2];
-               cout << theta_picture[i2] << endl;
+               //cout << theta_picture[i2] << endl;
                // Theta error
                theta_error_picture[i2] = 0.5;
                Double_t th_cm = theta_picture[i2];
@@ -183,7 +183,7 @@ void difcs()
             for (int i3 =0; i3<num; i3++){
                // Read CS from file
                myfile >> dcsn_picture[i3];
-               cout << dcsn_picture[i3] << endl; 
+               //cout << dcsn_picture[i3] << endl; 
                dcsn_picture[i3] = dcsn_picture[i3] +  0.1*(Ed[i]/25.) - 0.1;                
             }
          }else{
