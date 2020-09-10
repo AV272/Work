@@ -15,17 +15,18 @@ void difcs()
    c1->GetFrame()->SetBorderSize(12);
 
    // Read DATA file
-   
    ifstream myfile ("Th66_Data_dsigm[theta_cm]_DdnHe.txt");
 
-   // Put DATA
-   ofstream myfile2;
+   // Put DATA in new file
+   //ofstream myfile2;
 
+   // Create MultiGraph structure in order to put fits of all energies
    TMultiGraph *mg = new TMultiGraph();
    mg->SetTitle("Angular distribution in ^{2}H(d,n)^{3}He");
 
    TLatex latex;
 
+   // Introduce data and energies from article Th66
    const Int_t n = 12;
    Double_t Ed[n]  = {19.5, 26.9, 32.0, 45.1, 71.0, 96.6, 122.0, 147.5, 194.0, 248.3, 298.5, 348.7};
    Double_t An[n]  = {0.26, 0.51, 0.46, 0.57, 0.79, 0.87, 0.97, 1.09, 1.11, 1.32, 1.23, 1.29};
@@ -37,6 +38,7 @@ void difcs()
    Double_t Bp[n]  = {0.0, 0.0, 0.0, -0.03, 0.01, 0.03, 0.06, 0.11, 0.24, 0.32, 0.41, 0.66};
    Double_t eBp[n] = {0.0, 0.0, 0.0, 0.02, 0.02, 0.02 ,0.02, 0.02, 0.04, 0.03, 0.03, 0.03};
 
+   //Introduce arrays for data from picture (take from file)
    const Int_t num = 15;
    Double_t theta_picture[num];
    Double_t dcsn_picture[num];
@@ -46,7 +48,7 @@ void difcs()
    string s;
    Double_t buffer;
    
-
+   // Introduce arrays for angles (one step for each angle degree)
    const Int_t nn=180;
    Double_t dcsn[nn];
    Double_t dcsn2[nn];
@@ -73,17 +75,16 @@ void difcs()
       {  
          Double_t theta0 = j;
          theta[j] = theta0;
-         
          theta0 = (3.1415926*theta0)/180;
 
- ///<<<//////////////////////////////////////////////////////////////////////////////////        
-         // Translation angles to the center mass system
+ ///<<<///////////////////Translation angles to the center mass system//////////////////////////
          // Input parameters: m1, m2, m3, m4 -- particles masses; Ed[] -- kinetic energy of deutron
          // in lab system; theta[] -- laboratory scattering angle of particle 3. 
          Double_t th, m1, m2, m3, m4, E1, E_cmT, p1, check, E_cm4, alpha, E3, E3_2, ET,\
          p_cm, p3, sin_cm, p3_2, sin_cm_2, th_2, cos_cm;
          Double_t th_cm =0, th_cm2 =0;
-         
+
+         // Introduce rest mass for reaction particles        
          m1 = m2 = 1875.61*pow(10,3); // deuterium MeV
          m3 = 2808.92*pow(10,3); // He3
          m4 = 939.565*pow(10,3); // n
@@ -93,11 +94,12 @@ void difcs()
          ET = E1 + m2;
          p1 = sqrt(E1*E1 - m1*m1);
          E_cmT = sqrt(m1*m1 + m2*m2 + 2*m2*E1);
+         //Check to see if particle enough energy for this angle
          check = pow(m2*E1 + (m1*m1 + m2*m2 - m3*m3 -m4*m4)/2,2) - pow(m3*m4,2) - pow(p1*m3*sin(th),2);
          E_cm4 = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
          p_cm = sqrt(E_cm4*E_cm4 - m4*m4 );
 
-         // alpha determines if there two or one solutions for E3
+         // alpha determines if there two or one solutions for E3 (in this case only one solution)
          alpha = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
          (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))*(1-pow((m3-m4)/E_cmT,2))));
          if (alpha>1){
@@ -133,8 +135,6 @@ void difcs()
             cos_cm = (ET*(p3*cos(th) - (p1*E3/ET)))/(E_cmT*p_cm);
             //sin_cm = p3*sin(th)/p_cm;
             th_cm = TMath::ACos(cos_cm);
-            //if (th > 3.1415926/2){th_cm = 3.1415926 - th_cm;}
-            //printf("Theta_cm_alpha<1__%f_%f\n",180*th_cm/3.1415926,Ed[i]);
             theta_cm[j] = 180*th_cm/3.1415926;
 
             dcsn[j]  = 1 + An[i]*pow(cos(th_cm),2) + Bn[i]*pow(cos(th_cm),4)+0.1*(Ed[i]/25.) - 0.1;
@@ -148,45 +148,46 @@ void difcs()
 //>>>//////////////////////////////////////////////////////////////////////////////////
       }
 
+      // Delete energy 19.6 and 32.0 because they abscent in article picture
       if ((i==0)||(i==2)){continue;}
 
       for (int k =0; k< nn; k++){
             dcsn_cm_all[k] = dcsn[k];
             edcsn_cm_all[k] = edcsn[k];
-            theta_cm_all[k] = theta_cm[k] ;
-
-            //if (k >90){
-            //   theta_cm_all[k] = 180 - theta_cm[k] ;
-            //} else { theta_cm_all[k] = theta_cm[k] ;}
-            
+            theta_cm_all[k] = theta_cm[k];
             //dcsn_cm_all[k+nn] = dcsn2[k];
             //edcsn_cm_all[k+nn] = edcsn2[k];
             //theta_cm_all[k+nn] = theta_cm2[k];
          
       }
 
-//<<<//////////////////////////////////////////////////////////////////////
+//<<<//////////////////////////GET DATA FROM FILE////////////////////////////////////////////
       if (myfile.is_open())
       {
          myfile >>buffer;
-         printf("Ed_%f\n",Ed[i]);
-         printf("buffer_%f\n",buffer);
+         //printf("Ed_%f\n",Ed[i]);
+         //printf("buffer_%f\n",buffer);
          if (Ed[i]==buffer){
             for (int i2 =0; i2<num; i2++){
+               // Read theta from file
                myfile >> theta_picture[i2];
                cout << theta_picture[i2] << endl;
+               // Theta error
                theta_error_picture[i2] = 0.5;
                Double_t th_cm = theta_picture[i2];
+               // Cross section error (quadratic error)
                dcsn_error_picture[i2] = sqrt(pow(pow(cos(th_cm),2)*eAn[i],2) +\
                pow(pow(cos(th_cm),2)*eAn[i],2) + pow(An[i]*2*cos(th_cm)*sin(th_cm)*dth,2)+\
                pow(Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth,2));
             }
             for (int i3 =0; i3<num; i3++){
+               // Read CS from file
                myfile >> dcsn_picture[i3];
                cout << dcsn_picture[i3] << endl; 
                dcsn_picture[i3] = dcsn_picture[i3] +  0.1*(Ed[i]/25.) - 0.1;                
             }
          }else{
+            // if energy not equal then jump on three lines
             getline(myfile,s);
             getline(myfile,s);
             getline(myfile,s);
@@ -194,6 +195,8 @@ void difcs()
          
       }
       else {cout << "Unable to open file";} 
+
+      //////////////////PUT DATA IN FILE///////////////////////////////////
 
       myfile2_name.Form("difsig_%f_n_unpol_Th66.txt",Ed[i]);
       myfile2.open(myfile2_name);
@@ -221,7 +224,7 @@ void difcs()
       if (i == 9){dcsng_picture->SetLineColor(3);}
       else{dcsng_picture->SetLineColor(i+1);}
       
-      
+      // Adding graphics
       mg->Add(dcsng, "CP");
       mg->Add(dcsng_picture, "AP");
 
@@ -232,27 +235,7 @@ void difcs()
       //mg->GetXaxis()->SetLimits(1.5,7.5);
       mg->SetMinimum(0.8);
       mg->SetMaximum(4.5);
-      
-      //if (i==4)
-      //   {
-      //      dcsng->Draw();;
-      //   }
-      
-
    }
    c1->BuildLegend(0.35,0.55,0.65,0.89);
    myfile.close();
-   //mg->Draw();
-   //auto c2 = new TCanvas("c2","Differential cross-section / angle",200,10,700,500);
-   //c2->SetFillColor(42);
-   //c2->SetGrid();
-   //c2->GetFrame()->SetFillColor(21);
-   //c2->GetFrame()->SetBorderSize(12);
-   //auto d_th = new TGraphErrors(n,theta,dcsn,0,edcsn);
-   //dn->SetTitle("Differential cross-section / angle");
-   //dn->SetMarkerColor(4);
-   //dn->SetMarkerStyle(21);
-   //d_th->Draw();
-
-
 }
