@@ -15,9 +15,10 @@
 // 3) theta -- laboratory scattering angle of particle 3.
 
 // OUTPUT DATA
-// 1) E1_cm; E2_cm; E3_cm; E4_cm; 
-// 2) Theta3_cm; Theta4_cm; Theta4;
-// 3) E3; E4.
+// 1) E1_cm; E2_cm; E3_cm; E4_cm -- energy in center of mass system 
+// 2) Theta3_cm; Theta4_cm -- angles of outgoing particles in CM system 
+// 3) Theta4 -- angle of particle 4 in lab system
+// 3) E3; E4 -- energies of outgoing particles in lab system
 
 #include <TMath.h>
 using namespace std;
@@ -25,16 +26,17 @@ using namespace std;
 void Relativ_kinematic_calculations(){
     double m1, m2, m3, m4, Q, E1_k, theta, EN, Q_gs, T, E1, E_th, ET, p1,\
     T_A, sin_th3, cos_th3, check, E_cmT, E1_cm, E2_cm, E3_cm,  E4_cm, \
-    p_cm, alpha, E3, E4, p3, p4, beta, gamma, cos_th3_cm, sin_th3_cm, \
-    th3_cm, th4_cm, sin_th4, cos_th4, theta4, E1_k_min;
+    p_cm, alpha, beta, gamma, E1_k_min;
+    //double E3, E4, p4, p3, sin_th3_cm, cos_th3_cm, th3_cm, th4_cm,\
+    //sin_th4, cos_th4, theta4, dsigma_cm__dsigma_lab; 
 
     // Input data (Mev and degrees)
     m1 = 1875.61;
     m2 = 1875.61;
     m3 = 2808.92;
     m4 = 939.565;
-    E1_k = 100;
-    theta = 5;
+    E1_k = 0.1;
+    theta = 30;
 
     Q_gs = m1 + m2 - m3 - m4; // Q-value groundstate
     E1_k_min = (-Q_gs*(m1+m2+m3+m4)/(2*m2)); // Threshold energy
@@ -56,10 +58,11 @@ void Relativ_kinematic_calculations(){
     // Check it is enough energy for this angle
     check = pow(m2*E1 + (m1*m1 + m2*m2 - m3*m3 -m4*m4)/2,2) \
     - pow(m3*m4,2) - pow(p1*m3*sin_th3,2);
-    //if (check < 0){
-    //    cout << "Not enough energy for this angle " << "\n";
-    //    return;
-    //}
+    printf("check %f\n", check);
+    if (check < 0){
+        cout << "Not enough energy for this angle " << "\n";
+        return;
+    }
 
     // Calculate CENTER OF MASS energies
     E_cmT = sqrt(m1*m1 + m2*m2 + 2*m2*E1);
@@ -74,29 +77,27 @@ void Relativ_kinematic_calculations(){
     // Alpha determines if there two or one solutions for E3
     alpha = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
     (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))*(1-pow((m3-m4)/E_cmT,2))));
+    printf("alpha %f\n", alpha);
+    int n;
     if (alpha<=0){
         cout << "One root for E3" << "\n";
-        const int n=1;
-        double E3[n];
-        E3[0] = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2)\
-        + p1*cos_th3*sqrt(check))/(ET*ET - pow(p1*cos_th3,2));
+        n = 1;
     } else{
         cout << "Two roots for E3" << "\n";
-        const int n=2;
-        double E3[n];
-        E3[0] = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2)\
-        + p1*cos_th3*sqrt(check))/(ET*ET - pow(p1*cos_th3,2));
-        E3[1] = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2)\
-        - p1*cos_th3*sqrt(check))/(ET*ET - pow(p1*cos_th3,2));
+        n = 2;
     }
 
-    double E4[n], p3[n], p4[n], sin_th3_cm[n], cos_th3_cm[n], th3_cm[n], th4_cm[n],\
-    sin_th4[n], cos_th4[n], theta4[n], dsigma_cm__dsigma_lab[n], 
+    double E4[n], E3[n], p3[n], p4[n], sin_th3_cm[n], cos_th3_cm[n], th3_cm[n], th4_cm[n],\
+    sin_th4[n], cos_th4[n], theta4[n], dsigma_cm__dsigma_lab[n]; 
     beta = p1/ET;
+    printf("beta %f\n", beta);
     gamma = ET/E_cmT;
+    printf("gamma %f\n", gamma);
     // Make loop for finding roots: one step for alpha < 0 and 
     // two steps for alpha > 0
     for (int i=0; i<n; i++){
+        E3[i] = (ET*(m2*E1 + (m1*m1 +m2*m2 + m3*m3 - m4*m4)/2)\
+        + (1 -2*i)*p1*cos_th3*sqrt(check))/(ET*ET - pow(p1*cos_th3,2));
         E4[i] = ET - E3[i];
         p3[i] = sqrt(E3[i]*E3[i] - m3*m3);
         p4[i] = sqrt(E4[i]*E4[i] - m4*m4);
@@ -122,9 +123,9 @@ void Relativ_kinematic_calculations(){
         cos_th3_cm[i])*pow(sin_th3,3)/pow(sin_th3_cm[i],3);
 
         // Translate angles to degrees
-        th4_cm[i] = th4_cm/0.17453292;
-        th3_cm[i] = th3_cm/0.17453292;
-        theta4[i] = theta4/0.17453292;
+        th4_cm[i] = th4_cm[i]/0.17453292;
+        th3_cm[i] = th3_cm[i]/0.17453292;
+        theta4[i] = theta4[i]/0.17453292;
 
         // Change energies to kinetic (MeV)
         E3[i] = E3[i] - m3;
@@ -149,7 +150,7 @@ void Relativ_kinematic_calculations(){
 
     for(int i2=0; i2<n; i2++){
         
-        printf("SOLUTION %f\n", i2+1);
+        printf("SOLUTION %d\n", i2+1);
         printf("Theta3_cm %f\n", th3_cm[i2]);
         printf("Theta4_cm %f\n", th4_cm[i2]);
         printf("Theta4 %f\n", theta4[i2]);
