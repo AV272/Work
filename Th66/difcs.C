@@ -177,7 +177,7 @@ void difcs()
                Double_t th_cm = theta_picture[i2];
                // Cross section error (quadratic error)
                dcsn_error_picture[i2] = sqrt(pow(pow(cos(th_cm),2)*eAn[i],2) +\
-               pow(pow(cos(th_cm),2)*eAn[i],2) + pow(An[i]*2*cos(th_cm)*sin(th_cm)*dth,2)+\
+               pow(pow(cos(th_cm),2)*eBn[i],2) + pow(An[i]*2*cos(th_cm)*sin(th_cm)*dth,2)+\
                pow(Bn[i]*4*pow(cos(th_cm),3)*sin(th_cm)*dth,2));
             }
             for (int i3 =0; i3<num; i3++){
