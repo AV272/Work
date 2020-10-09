@@ -11,6 +11,7 @@ void difcs()
    c1->SetGrid();
    c1->GetFrame()->SetFillColor(21);
    c1->GetFrame()->SetBorderSize(12);
+   c1->Divide(2,1);
 
    // auto c2 = new TCanvas("c2","A Simple Graph with error bars",200,10,700,500);
    // c2->SetGrid();
@@ -27,8 +28,8 @@ void difcs()
    TMultiGraph *mg1 = new TMultiGraph();
    mg1->SetTitle("Angular distribution in ^{2}H(d,n)^{3}He");
 
-   //TMultiGraph *mg2 = new TMultiGraph();
-   //mg2->SetTitle("Angular distribution in ^{2}H(d,p)^{3}H");
+   TMultiGraph *mg2 = new TMultiGraph();
+   mg2->SetTitle("Angular distribution in ^{2}H(d,p)^{3}H");
 
    TLatex latex;
 
@@ -134,14 +135,18 @@ void difcs()
 
 //>>>///////////////////////////////////////////////////////////////////////
 
-      if ((i==0)||(i==2)||(i==3)||(i==5)||(i==6)||(i==8)||(i==10)\
+      // Choose only energies on the puicture
+      //if ((i==0)||(i==2)||(i==3)||(i==5)||(i==6)||(i==8)||(i==10)\
       ||(i==11)||(i==12)||(i==14)){continue;}
 
-      int it;
-      it = it +1;
-      for(int i2=0; i2<nn;i2++){
-         dcsn[i2] = dcsn[i2] + 0.1*it;
-      }
+      // Shift grafics up with 10 kev interval
+      // int it;
+      // it = it +1;
+      // for(int i2=0; i2<nn;i2++){
+      //    dcsn[i2] = dcsn[i2] + 0.1*it;
+      //    dcsp[i2] = dcsp[i2] + 0.1*it;
+      // }
+   
       auto dcsng = new TGraphErrors(nn,theta,dcsn,0,0);
       dcsng->SetMarkerColor(1);
       dcsng->SetMarkerStyle(1);
@@ -158,29 +163,36 @@ void difcs()
       
       // Adding graphics
       
-      mg1->Add(dcsng, "CP");
-      mg1->Draw("A");
-      mg1->GetXaxis()->SetTitle("#it{#theta} (degres)");
-      mg1->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
-      gPad->Modified();
-      mg1->SetMinimum(0.8);
-      mg1->SetMaximum(3.0);
+      mg1->Add(dcsng, "ACP"); 
+     
       
-
-      // auto dcspg = new TGraphErrors(nn,theta,dcsp,0,error_B1_B0_p);
-      // dcspg->SetMarkerColor(1);
-      // dcspg->SetMarkerStyle(1);
-      // g_name.Form("Energy_%f",Ed[i]);
-      // dcspg->SetTitle(g_name);
-      // mg2->Draw("c2");
-      // mg2->Add(dcspg, "ACP");
-      // mg2->GetXaxis()->SetTitle("#it{#theta} (degres)");
-      // mg2->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
-      // gPad->Modified();
-      // mg2->SetMinimum(0.8);
-      // mg2->SetMaximum(4.5);
+      auto dcspg = new TGraphErrors(nn,theta,dcsp,0,0);
+      dcspg->SetMarkerColor(1);
+      dcspg->SetMarkerStyle(1);
+      dcspg->SetLineColor(i+1);
+      g_name.Form("Energy_%f",Ed[i]);
+      dcspg->SetTitle(g_name);
+     
+      mg2->Add(dcspg, "ACP");
       
    }
-   c1->BuildLegend(0.35,0.55,0.65,0.89);
+
+   c1->cd(2);
+   mg1->Draw("A");
+   mg1->GetXaxis()->SetTitle("#it{#theta} (degres)");
+   mg1->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
+   gPad->Modified();
+   mg1->SetMinimum(0.8);
+   mg1->SetMaximum(3.5);
+   //c1->BuildLegend(0.35,0.55,0.65,0.89);
+
+
+   c1->cd(1);
+   mg2->Draw("A");
+   mg2->GetXaxis()->SetTitle("#it{#theta} (degres)");
+   mg2->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
+   gPad->Modified();
+   mg2->SetMinimum(0.8);
+   mg2->SetMaximum(3.5);
    //myfile.close();
 }
