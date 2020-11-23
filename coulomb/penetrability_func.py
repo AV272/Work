@@ -16,8 +16,9 @@ def C_l(l, eta, z):
     
     P_l = 1/(F**2 + G**2)
     delta_l = -cmath.atan(F/G)
-    phi_l = cmath.phase(float(math.gamma(l +1 + j*eta)))
-    return(sqrt(P_l*math.exp(j*(delta_l + phi_l))))
+    ch = gamma(l +1 + j*eta)
+    phi_l = cmath.phase(ch)
+    return(sqrt(P_l*exp(j*(delta_l + phi_l))))
 
 
 def F2(x):
@@ -32,7 +33,7 @@ def C_l_E(E):
     M = M1*M2/(M1+M2)
     eta = z1*z2*el**2/(h*sqrt(2*E/M))
     z = 1
-    C_l(0,eta,z)
+    C_l(0,eta,0.7)
     
 
 plot(C_l_E, [0,10], [0,25])
