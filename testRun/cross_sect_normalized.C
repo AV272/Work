@@ -1,7 +1,7 @@
 #include <TLatex.h>
 
 
-void difcs() {
+void cross_sect_normalized() {
    auto c1 = new TCanvas("c1","A Simple Graph with error bars",200,10,700,500);
    //c1->SetFillColor(42);
    c1->SetGrid();
@@ -9,7 +9,7 @@ void difcs() {
    c1->GetFrame()->SetBorderSize(12);
 
    TMultiGraph *mg = new TMultiGraph();
-   mg->SetTitle("Angular distribution in ^{2}H(d,n)^{3}He");
+   mg->SetTitle("Cross section ^{2}H(d,p)^{3}H normalize to CS(160(2.8) degres)");
 
    TLatex latex;
 
@@ -33,7 +33,7 @@ void difcs() {
    //mg->Draw();
    //dn->Draw();
 
-   const Int_t nn=15;
+   const Int_t nn=180;
    Double_t dcsn[nn];
    Double_t dcsp[nn];
    Double_t theta[nn];
@@ -41,6 +41,7 @@ void difcs() {
    Double_t edcsp[nn];
    Double_t dth = (3.1415926*0.5)/180;
    TString g_name;
+   double norm_angle = 2.8, CS_norm;
 
 
 
@@ -51,35 +52,36 @@ void difcs() {
       {  
          
          
-         Double_t theta0 = j*10 +20;
+         Double_t theta0 = j;
          theta[j] = theta0;
          Double_t th = (3.1415926*theta0)/180;
-         dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4)+0.1*i - 0.2;
-         dcsp[j]  = 1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4)+0.1*i;
-         edcsn[j] = pow(cos(th),2)*eAn[i] + pow(cos(th),4)*eBn[i] + An[i]*2*cos(th)*sin(th)*dth + Bn[i]*4*pow(cos(th),3)*sin(th)*dth;
+         CS_norm = 1 + Ap[i]*pow(cos(norm_angle),2) + Bp[i]*pow(cos(norm_angle),4);
+         //dcsn[j]  = 1 + An[i]*pow(cos(th),2) + Bn[i]*pow(cos(th),4);
+         dcsp[j]  = (1 + Ap[i]*pow(cos(th),2) + Bp[i]*pow(cos(th),4))/(CS_norm);
+         //edcsn[j] = pow(cos(th),2)*eAn[i] + pow(cos(th),4)*eBn[i] + An[i]*2*cos(th)*sin(th)*dth + Bn[i]*4*pow(cos(th),3)*sin(th)*dth;
          edcsp[j] = pow(cos(th),2)*eAp[i] + pow(cos(th),4)*eBp[i] + Ap[i]*2*cos(th)*sin(th)*dth + Bp[i]*4*pow(cos(th),3)*sin(th)*dth;
          
 
       }
 
-      if ((i==0)||(i==2)){continue;}
-      auto dcsng = new TGraphErrors(nn,theta,dcsn,0,edcsn);
-      //dcsng->SetTitle("Differential cross-section / angle");
-      dcsng->SetMarkerColor(4);
-      dcsng->SetMarkerStyle(21);
-      dcsng->SetLineColor(i+1);
-      g_name.Form("Energy_%f",Ed[i]);
-      dcsng->SetTitle(g_name);
-      
-      mg->Add(dcsng);
-      mg->Draw("ACP");
-      mg->GetXaxis()->SetTitle("#it{#theta} (degres)");
-      mg->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
-      gPad->Modified();
-      //mg->GetXaxis()->SetLimits(1.5,7.5);
-      mg->SetMinimum(0.8);
-      mg->SetMaximum(4.);
-      
+      if ((i==0)||(i==1)){
+         auto dcsng = new TGraphErrors(nn,theta,dcsp,0,edcsp);
+         //dcsng->SetTitle("Differential cross-section / angle");
+         dcsng->SetMarkerColor(4);
+         dcsng->SetMarkerStyle(7);
+         dcsng->SetLineColor(i+1);
+         g_name.Form("Energy_%f",Ed[i]);
+         dcsng->SetTitle(g_name);
+         
+         mg->Add(dcsng);
+         mg->Draw("ACP");
+         mg->GetXaxis()->SetTitle("#it{#theta} (degres)");
+         mg->GetYaxis()->SetTitle("#it{#frac{d#sigma}{d#omega} (#theta)} (arbitrary units)");
+         gPad->Modified();
+         //mg->GetXaxis()->SetLimits(1.5,7.5);
+         mg->SetMinimum(0.78);
+         mg->SetMaximum(1.2);
+      }
       //if (i==4)
       //   {
       //      dcsng->Draw();;
