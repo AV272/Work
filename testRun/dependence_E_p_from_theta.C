@@ -60,7 +60,7 @@ void dependence_E_p_from_theta(){
         p1 = sqrt(E1*E1 - m1*m1); //  Momentum of particle 1 in lab
         
         //Change angles to radians
-        theta = theta*0.17453292;
+        theta = theta*0.017453292;
         sin_th3 = sin(theta);
         cos_th3 = cos(theta);
 

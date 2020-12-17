@@ -51,7 +51,7 @@ void Relativ_kinematic_calculations(){
     p1 = sqrt(E1*E1 - m1*m1); //  Momentum of particle 1 in lab
     
     //Change angles to radians
-    theta = theta*0.17453292;
+    theta = theta*0.017453292;
     sin_th3 = sin(theta);
     cos_th3 = cos(theta);
 
@@ -123,9 +123,9 @@ void Relativ_kinematic_calculations(){
         cos_th3_cm[i])*pow(sin_th3,3)/pow(sin_th3_cm[i],3);
 
         // Translate angles to degrees
-        th4_cm[i] = th4_cm[i]/0.17453292;
-        th3_cm[i] = th3_cm[i]/0.17453292;
-        theta4[i] = theta4[i]/0.17453292;
+        th4_cm[i] = th4_cm[i]/0.017453292;
+        th3_cm[i] = th3_cm[i]/0.017453292;
+        theta4[i] = theta4[i]/0.017453292;
 
         // Change energies to kinetic (MeV)
         E3[i] = E3[i] - m3;
@@ -137,7 +137,7 @@ void Relativ_kinematic_calculations(){
     E2_cm = E2_cm - m2;
     E3_cm = E3_cm - m3;
     E4_cm = E4_cm - m4;
-    theta = theta/0.17453292;
+    theta = theta/0.017453292;
 
     // PRINT OUTPUT
     cout << "OUTPUT \nINPUT DATA" << "\n";
