@@ -36,7 +36,7 @@ void dependence_E_p_from_theta(){
     m2 = 1875.61;
     m4 = 2808.92;
     m3 = 939.565;
-    E1_k = 0.02;
+    E1_k = 0.01;
 
     int n3 = 360, n3_2 = 720;
 
@@ -147,8 +147,8 @@ void dependence_E_p_from_theta(){
         theta = theta/0.017453292;
         for(int i2=0; i2<n; i2++){
             if (i2!=0){
-                E_p_arr[num+100] = E3[i2];
-                theta_p_arr[num+100] = theta;
+                E_p_arr[num+360] = E3[i2];
+                theta_p_arr[num+360] = theta;
             } else{
                 E_p_arr[num] = E3[i2];
             }
@@ -166,10 +166,10 @@ void dependence_E_p_from_theta(){
     gr->GetXaxis()->SetTitle("#theta(degres)");
     gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
     gr->SetTitle("Dependence of E_{kin} of proton from proton scattering\
-    angle (#theta) in lab system at 20 keV");
+    angle (#theta) in lab system at 10 keV");
     gr->SetMinimum(1.9);
     gr->SetMaximum(2.23);
-    gr->Draw("ACP*");
+    gr->Draw("AP*");
 
 
 

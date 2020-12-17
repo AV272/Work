@@ -150,8 +150,9 @@ void dependence_E_p_from_E_d(){
             } else{
                 E_p_arr[num] = E3[i2];
             }
-            //printf("SOLUTION %d\n", i2+1);
-            //printf("E3 %f\n", E3[i2]);
+            printf("SOLUTION %d\n", i2+1);
+            printf("E3 %f\n", E3[i2]);
+            printf("E_d_k %f\n", E1_k);
 
         }
 
@@ -164,7 +165,7 @@ void dependence_E_p_from_E_d(){
     gr->GetXaxis()->SetTitle("E_{d kinetic}(MeV)");
     gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
     gr->SetTitle("Dependence of E_{kin} of proton from E_{kin} deutron in lab system (MeV)");
-    gr->Draw("ACP*");
+    gr->Draw("AP*");
 
 
 
