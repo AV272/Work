@@ -61,7 +61,7 @@ void dependence_E_p_from_theta(){
         
         //Change angles to radians
         theta = theta*0.017453292;
-        printf("theta  %f\n", theta);
+        //printf("theta  %f\n", theta);
         sin_th3 = sin(theta);
         cos_th3 = cos(theta);
 
@@ -166,7 +166,7 @@ void dependence_E_p_from_theta(){
     gr->GetXaxis()->SetTitle("#theta(degres)");
     gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
     gr->SetTitle("Dependence of E_{kin} of proton from proton scattering\
-    angle (#theta) in lab system at 10 keV");
+    angle (#theta) in lab system at 20 keV");
     gr->SetMinimum(1.9);
     gr->SetMaximum(2.23);
     gr->Draw("ACP*");
