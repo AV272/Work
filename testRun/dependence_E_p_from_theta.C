@@ -61,13 +61,14 @@ void dependence_E_p_from_theta(){
         
         //Change angles to radians
         theta = theta*0.017453292;
+        printf("theta  %f\n", theta);
         sin_th3 = sin(theta);
         cos_th3 = cos(theta);
 
         // Check it is enough energy for this angle
         check = pow(m2*E1 + (m1*m1 + m2*m2 - m3*m3 -m4*m4)/2,2) \
         - pow(m3*m4,2) - pow(p1*m3*sin_th3,2);
-        printf("check %f\n", check);
+        //printf("check %f\n", check);
         if (check < 0){
             cout << "Not enough energy for this angle " << "\n";
             E_p_arr[num] = 0;
@@ -82,12 +83,12 @@ void dependence_E_p_from_theta(){
         E4_cm = (E_cmT*E_cmT + m4*m4 - m3*m3)/(2*E_cmT);
 
         p_cm = sqrt(E4_cm*E4_cm - m4*m4); // Center of mass momentum 
-                                        // of outgoing particles 
+                                          // of outgoing particles 
 
         // Alpha determines if there two or one solutions for E3
         alpha = (p1*(1+(m3*m3 - m4*m4)/(E_cmT*E_cmT)))/\
         (ET*sqrt((1-pow((m3 + m4)/E_cmT,2))*(1-pow((m3-m4)/E_cmT,2))));
-        printf("alpha %f\n", alpha);
+        //printf("alpha %f\n", alpha);
         int n;
         if (alpha<=0){
             cout << "One root for E3" << "\n";
@@ -100,9 +101,9 @@ void dependence_E_p_from_theta(){
         double E4[n], E3[n], p3[n], p4[n], sin_th3_cm[n], cos_th3_cm[n], th3_cm[n], th4_cm[n],\
         sin_th4[n], cos_th4[n], theta4[n], dsigma_cm__dsigma_lab[n]; 
         beta = p1/ET;
-        printf("beta %f\n", beta);
+        //printf("beta %f\n", beta);
         gamma = ET/E_cmT;
-        printf("gamma %f\n", gamma);
+        //printf("gamma %f\n", gamma);
         // Make loop for finding roots: one step for alpha < 0 and 
         // two steps for alpha > 0
         for (int i=0; i<n; i++){
@@ -133,15 +134,17 @@ void dependence_E_p_from_theta(){
             cos_th3_cm[i])*pow(sin_th3,3)/pow(sin_th3_cm[i],3);
 
             // Translate angles to degrees
-            th4_cm[i] = th4_cm[i]/0.17453292;
-            th3_cm[i] = th3_cm[i]/0.17453292;
-            theta4[i] = theta4[i]/0.17453292;
+            th4_cm[i] = th4_cm[i]/0.017453292;
+            th3_cm[i] = th3_cm[i]/0.017453292;
+            theta4[i] = theta4[i]/0.017453292;
+            
 
             // Change energies to kinetic (MeV)
             E3[i] = E3[i] - m3;
             E4[i] = E4[i] - m4;
+            
         }
-
+        theta = theta/0.017453292;
         for(int i2=0; i2<n; i2++){
             if (i2!=0){
                 E_p_arr[num+100] = E3[i2];
@@ -149,8 +152,8 @@ void dependence_E_p_from_theta(){
             } else{
                 E_p_arr[num] = E3[i2];
             }
-            printf("SOLUTION %d\n", i2+1);
-            printf("E3 %f\n", E3[i2]);
+            //printf("SOLUTION %d\n", i2+1);
+            //printf("E3 %f\n", E3[i2]);
 
         }
 
@@ -163,7 +166,7 @@ void dependence_E_p_from_theta(){
     gr->GetXaxis()->SetTitle("#theta(degres)");
     gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
     gr->SetTitle("Dependence of E_{kin} of proton from proton scattering\
-    angle (#theta) in lab system at 20 keV");
+    angle (#theta) in lab system at 10 keV");
     gr->SetMinimum(1.9);
     gr->SetMaximum(2.23);
     gr->Draw("ACP*");
@@ -175,7 +178,7 @@ void dependence_E_p_from_theta(){
     // E2_cm = E2_cm - m2;
     // E3_cm = E3_cm - m3;
     // E4_cm = E4_cm - m4;
-    // theta = theta/0.17453292;
+    // theta = theta/0.017453292;
 
     // // PRINT OUTPUT
     // cout << "OUTPUT \nINPUT DATA" << "\n";
