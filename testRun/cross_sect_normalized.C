@@ -18,12 +18,14 @@ void cross_sect_normalized() {
    TString g_name;
    double norm_angle = 2.8;
 
+   ////////////Th66
    Double_t dcsp_th66_19k[nn], edcsp_th66_19k[nn], CS_norm_th66_19k,\
    Ap_th66_19k = 0.2, Bp_th66_19k = 0.0, eAp_th66_19k = 0.15, eBp_th66_19k = 0.;
 
    Double_t dcsp_th66_26k[nn], edcsp_th66_26k[nn], CS_norm_th66_26k,\
    Ap_th66_26k = 0.27, Bp_th66_26k = 0.0, eAp_th66_26k = 0.08, eBp_th66_26k = 0.;
 
+   ////////////Kr86
    Double_t dcsp_kr86_15k[nn], edcsp_kr86_15k[nn], CS_norm_kr86_15k, q2 = 0.999, q4 = 0.996,\
    Ap_kr86_15k = 0.05, Bp_kr86_15k = 0.03, eAp_kr86_15k = 0.04, eBp_kr86_15k = 0., leg_2, leg_4;
 
@@ -32,6 +34,17 @@ void cross_sect_normalized() {
 
    Double_t dcsp_kr86_30k[nn], edcsp_kr86_30k[nn], CS_norm_kr86_30k,\
    Ap_kr86_30k = 0.21, Bp_kr86_30k = 0.04, eAp_kr86_30k = 0.01, eBp_kr86_30k = 0.03;
+
+   ////////////Br90
+   Double_t dcsp_br90_20k[nn], edcsp_br90_20k[nn], CS_norm_br90_20k,\
+   Ap_br90_20k = 0.0208, Bp_br90_20k = 0.0023, eAp_br90_20k = 0.0010, eBp_br90_20k = 0.0022;
+
+   Double_t dcsp_br90_30k[nn], edcsp_br90_30k[nn], CS_norm_br90_30k,\
+   Ap_br90_30k = 0.0886, Bp_br90_30k = 0.0184, eAp_br90_30k = 0.0020, eBp_br90_30k = 0.0044;
+
+   ////////////We52
+   Double_t dcsp_we52_35k[nn], edcsp_we52_35k[nn], CS_norm_we52_35k,\
+   Ap_we52_35k = 0.155, Bp_we52_35k = 0.02, coef = 1.94/(4*3.1415926);
    
    
    
@@ -81,7 +94,21 @@ void cross_sect_normalized() {
       pow(Ap_kr86_30k*q2*(0.5*(3*2*cos(th)*(-sin(th))*dth)-1) +\
       Bp_kr86_30k*q4*(4.0628*4*pow(cos(th),3)*(-sin(th))*dth - 2.375*2*cos(th)*(-sin(th))*dth +0.3125),2));
 
-         
+      //Br90
+      CS_norm_br90_20k = Ap_br90_20k + Bp_br90_20k*pow(cos(norm_angle),2);
+      dcsp_br90_20k[j]  = (Ap_br90_20k + Bp_br90_20k*pow(cos(th),2))/(CS_norm_br90_20k);
+      edcsp_br90_20k[j] = sqrt(pow(eAp_br90_20k,2) + pow(pow(cos(th),2)*eBp_br90_20k,2) +\
+      pow(Bp_br90_20k*2*cos(th)*(-sin(th))*dth,2)); 
+
+      CS_norm_br90_30k = Ap_br90_30k + Bp_br90_30k*pow(cos(norm_angle),2);
+      dcsp_br90_30k[j]  = (Ap_br90_30k + Bp_br90_30k*pow(cos(th),2))/(CS_norm_br90_30k);
+      edcsp_br90_30k[j] = sqrt(pow(eAp_br90_30k,2) + pow(pow(cos(th),2)*eBp_br90_30k,2) +\
+      pow(Bp_br90_30k*2*cos(th)*(-sin(th))*dth,2)); 
+
+      //We52
+      CS_norm_we52_35k = coef*(1 + Ap_we52_35k*leg_2_N + Bp_we52_35k*leg_4_N);
+      dcsp_we52_35k[j]  = (coef*(1 + Ap_we52_35k*leg_2 + Bp_we52_35k*leg_4))/(CS_norm_we52_35k);
+
 
    }
    
@@ -115,12 +142,34 @@ void cross_sect_normalized() {
    gr_kr86_30k->SetMarkerStyle(24);
    gr_kr86_30k->SetLineColor(6);
    gr_kr86_30k->SetTitle("Krauss86 30 keV");
+
+   auto gr_br90_20k = new TGraphErrors(nn,theta,dcsp_br90_20k,0,edcsp_br90_20k);
+   gr_br90_20k->SetMarkerColor(7);
+   gr_br90_20k->SetMarkerStyle(25);
+   gr_br90_20k->SetLineColor(7);
+   gr_br90_20k->SetTitle("Brown90 20 keV");
+
+   auto gr_br90_30k = new TGraphErrors(nn,theta,dcsp_br90_30k,0,edcsp_br90_30k);
+   gr_br90_30k->SetMarkerColor(8);
+   gr_br90_30k->SetMarkerStyle(26);
+   gr_br90_30k->SetLineColor(8);
+   gr_br90_30k->SetTitle("Brown90 30 keV");
+
+   auto gr_we52_35k = new TGraphErrors(nn,theta,dcsp_we52_35k,0,0);
+   gr_we52_35k->SetMarkerColor(9);
+   gr_we52_35k->SetMarkerStyle(27);
+   gr_we52_35k->SetLineColor(9);
+   gr_we52_35k->SetTitle("Wenzel 35 keV");
    
    mg->Add(gr_th66_19k);
    mg->Add(gr_th66_26k);
    mg->Add(gr_kr86_15k);
    mg->Add(gr_kr86_20k);
    mg->Add(gr_kr86_30k);
+   mg->Add(gr_br90_20k);
+   mg->Add(gr_br90_30k);
+   mg->Add(gr_we52_35k);
+
 
    mg->SetTitle("Cross section ^{2}H(d,p)^{3}H normalize to CS(160(2.8) degres)");
    mg->GetXaxis()->SetTitle("#it{#theta} (degres)");
