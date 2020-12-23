@@ -47,7 +47,7 @@ void dependence_E_p_from_theta(){
     c1->SetGrid();
     c1->GetFrame()->SetFillColor(21);
     c1->GetFrame()->SetBorderSize(12);
-    c1->Divide(1,2);
+    c1->Divide(2);
 
     auto mg = new TMultiGraph();
     auto mg2 = new TMultiGraph();
@@ -174,10 +174,17 @@ void dependence_E_p_from_theta(){
         }
 
         for (int i3=0; i3<n4; i3++){
-            dTheta[i3] = (theta_p_arr[4*i3+4]-theta_p_arr[4*i3])/2;
+            dTheta[i3] = (theta_p_arr[4*i3+4]+theta_p_arr[4*i3])/2;
             dE[i3] = E_p_arr[4*i3+4] - E_p_arr[4*i3];
         }
 
+        dTheta[89] = 0;
+        dE[89] = 0;
+        dTheta[179] = 0;
+        dE[179] = 0;
+        for (int i5=0; i5<n4; i5++){
+            printf("dTheta %d %f\n", i5, dTheta[i5]);
+        }
         TGraph* gr = new TGraph(n3_2, theta_p_arr, E_p_arr);
         gr->GetXaxis()->SetTitle("#theta(degres)");
         gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
@@ -200,29 +207,29 @@ void dependence_E_p_from_theta(){
         gr2->SetTitle(g_name);
         mg2->Add(gr2);
     }
-    c1->Divide(1,2);
 
+    c1->cd(1);
     mg->SetTitle("Dependence of E_{kin} of proton from proton scattering\
     angle (#theta) in lab system");
     mg->GetXaxis()->SetTitle("#it{#theta} (degres)");
     mg->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
     gPad->Modified();
-    c1->cd(1);
     mg->Draw("ap");
+    c1->cd(1)->BuildLegend(0.35,0.55,0.65,0.89);
 
     //printf("AA %d", mg->GetListOfGraphs()->GetEntries());
     //c1->BuildLegend(0.35,0.55,0.65,0.89);
-
+    c1->cd(2);
     mg2->SetTitle("Dependence of #Delta E_{kin} of proton from proton scattering\
     angle (#theta) in lab system");
     mg2->GetXaxis()->SetTitle("#it{#theta} (degres)");
     mg2->GetYaxis()->SetTitle("#Delta E_{p kinetic}(Mev)");
     gPad->Modified();
-    c1->cd(2);
     mg2->Draw("ap");
+    c1->cd(2)->BuildLegend(0.35,0.55,0.65,0.89);
 
     //printf("AA %d", mg->GetListOfGraphs()->GetEntries());
-    c1->BuildLegend(0.35,0.55,0.65,0.89);
+    
     
 
     // // Change energies to kinetic (MeV)
