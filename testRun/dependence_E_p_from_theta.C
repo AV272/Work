@@ -32,12 +32,14 @@ void dependence_E_p_from_theta(){
     //sin_th4, cos_th4, theta4, dsigma_cm__dsigma_lab;
     TString g_name; 
 
+    mp = 938.272;
+    mn = 939.565;
     // Input data (Mev and degrees)
-    m1 = 1875.61;
+    m1 = 2*1875.61;
     m2 = 1875.61;
-    m4 = 2808.92;
-    m3 = 939.565;
-    double E1_k_arr[3] = {0.01, 0.015, 0.025};
+    m4 = 2*mp + 3*mn;
+    m3 = 938.272;
+    double E1_k_arr[3] = {0.05, 0.015, 0.025};
 
     int n3 = 360, n3_2 = 720, n4=180;
 
@@ -53,8 +55,8 @@ void dependence_E_p_from_theta(){
     auto mg2 = new TMultiGraph();
 
 
-    for (int ii=0; ii<3; ii++){
-        E1_k = E1_k_arr[ii];
+    for (int ii=0; ii<1; ii++){
+        E1_k = E1_k_arr[0];
 
         for (int num=0; num<n3; num++){
             theta = num;
