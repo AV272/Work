@@ -34,7 +34,7 @@ void Relativ_kinematic_calculations(){
     m1 = 1875.61;
     m2 = 1875.61;
     m3 = 2808.92;
-    m4 = 939.565;
+    m4 = 938.272;
     E1_k = 0.1;
     theta = 30;
 

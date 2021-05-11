@@ -209,7 +209,38 @@ void cross_sect_from_articles_25_50_kev() {
 
 
    }
- 
+   
+   for (int i2=0; i2<nn; i2++){
+      Kr_arr[i2] = dcsp_kr86_50k[i2]/dcsp_kr86_20k[i2];
+      Br_arr[i2] = dcsp_br90_50k[i2]/dcsp_br90_20k[i2];
+      Kr_n_arr[i2] = dcsn_kr86_50k[i2]/dcsn_kr86_20k[i2];
+      Br_n_arr[i2] = dcsn_br90_50k[i2]/dcsn_br90_20k[i2];
+      //printf("Kr_arr_%f\n", Kr_arr[i2]);
+      //printf("Br_arr_%f\n", Br_arr[i2]);
+   }
+
+   TGraph* gr2 = new TGraph(nn, theta, Kr_arr);
+   gr2->SetMarkerColor(4);
+   gr2->SetMarkerStyle(23);
+   gr2->SetLineColor(4);
+   gr2->SetTitle("Krauss86 50/20");
+   TGraph* gr3 = new TGraph(nn, theta, Br_arr);
+   gr3->SetMarkerColor(1);
+   gr3->SetMarkerStyle(20);
+   gr3->SetLineColor(1);
+   gr3->SetTitle("Brown90 50/20");
+
+   TGraph* gr4 = new TGraph(nn, theta, Kr_n_arr);
+   gr4->SetMarkerColor(2);
+   gr4->SetMarkerStyle(21);
+   gr4->SetLineColor(2);
+   gr4->SetTitle("Krauss86 n 50/20");
+   TGraph* gr5 = new TGraph(nn, theta, Br_n_arr);
+   gr5->SetMarkerColor(3);
+   gr5->SetMarkerStyle(22);
+   gr5->SetLineColor(3);
+   gr5->SetTitle("Brown90 n 50/20");
+
    // auto gr_th66_45k = new TGraphErrors(nn,theta,dcsp_th66_45k,0,0);
    // gr_th66_45k->SetMarkerColor(1);
    // gr_th66_45k->SetMarkerStyle(20);
@@ -273,14 +304,17 @@ void cross_sect_from_articles_25_50_kev() {
    
    // mg->Add(gr_th66_45k);
    // mg->Add(gr_th66_26k);
-   mg->Add(gr_kr86_50k);
-   mg->Add(gr_kr86_20k);
-   mg->Add(gr_kr86_30k);
-   mg->Add(gr_br90_20k);
-   mg->Add(gr_br90_30k);
-   mg->Add(gr_br90_50k);
+   // mg->Add(gr_kr86_50k);
+   // mg->Add(gr_kr86_20k);
+   // mg->Add(gr_kr86_30k);
+   // mg->Add(gr_br90_20k);
+   // mg->Add(gr_br90_30k);
+   // mg->Add(gr_br90_50k);
    // mg->Add(gr_we52_35k);
    // mg->Add(gr_we52_50k);
+
+   mg->Add(gr2);
+   mg->Add(gr3);
 
    c1->cd(1);
    //mg->SetTitle("Cross section ^{2}H(d,p)^{3}H for energies 25, 50 kev normalize to CS(90 degres)");
@@ -349,12 +383,16 @@ void cross_sect_from_articles_25_50_kev() {
    
    // mg2->Add(gr_th66_n45k);
    // mg2->Add(gr_th66_n26k);
-   mg2->Add(gr_kr86_n50k);
-   mg2->Add(gr_kr86_n20k);
-   mg2->Add(gr_kr86_n30k);
-   mg2->Add(gr_br90_n20k);
-   mg2->Add(gr_br90_n30k);
-   mg2->Add(gr_br90_n50k);
+   // mg2->Add(gr_kr86_n50k);
+   // mg2->Add(gr_kr86_n20k);
+   // mg2->Add(gr_kr86_n30k);
+   // mg2->Add(gr_br90_n20k);
+   // mg2->Add(gr_br90_n30k);
+   // mg2->Add(gr_br90_n50k);
+
+   mg2->Add(gr4);
+   mg2->Add(gr5);
+
 
    c1->cd(2);
    //mg2->SetTitle("Cross section ^{2}H(d,n)^{3}He for energies 25, 50 kev normalize to CS(90 degres)");

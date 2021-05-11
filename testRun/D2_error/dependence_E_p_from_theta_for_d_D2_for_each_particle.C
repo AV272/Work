@@ -24,7 +24,7 @@
 #include <TLatex.h>
 using namespace std;
 
-void dependence_E_p_from_theta_22(){
+void dependence_E_p_from_theta_for_d_D2_for_each_particle(){
     double m1, m2, m3, m4, Q, E1_k, theta, EN, Q_gs, T, E1, E_th, ET, p1,\
     T_A, sin_th3, cos_th3, check, E_cmT, E1_cm, E2_cm, E3_cm,  E4_cm, \
     p_cm, alpha, beta, gamma, E1_k_min;
@@ -38,14 +38,13 @@ void dependence_E_p_from_theta_22(){
     // Input data (Mev and degrees)
     double m1_arr[2] = {2*1875.61, 1875.61}; // D2
     m2 = 1875.61;
-    double m4_arr[2] = {m2 + mn, mn};
-    m3 = 2808.39;
+    double m4_arr[2] = {m2 + 2808.92, 2808.92};
+    m3 = 938.272;
     double E1_k_arr[2] = {0.05, 0.05};
 
     int n3 = 360, n3_2 = 720, n4=180;
 
-    double E_d_arr[n3_2], E_p_arr[n3_2], theta_p_arr[n3_2], dE[n4], dTheta[n4], E_T_arr[n3_2], theta_T_arr[n3_2],\
-    E_arr_end_D2[n3_2], E_arr_end_d[n3_2], E_end[n3_2];
+    double E_d_arr[n3_2], E_p_arr[n3_2], theta_p_arr[n3_2], dE[n4], dTheta[n4], E_T_arr[n3_2], theta_T_arr[n3_2];
 
     auto c1 = new TCanvas("c1","Multigraph",700,500);
     c1->SetGrid();
@@ -185,45 +184,72 @@ void dependence_E_p_from_theta_22(){
 
             }
 
-            // if(i4==0){
-            //     TGraph* gr = new TGraph(n3_2, theta_p_arr, E_p_arr);
-            //     gr->GetXaxis()->SetTitle("#theta(degres)");
-            //     gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
-            //     gr->SetMarkerColor(1);
-            //     gr->SetMarkerStyle(20);
-            //     gr->SetLineColor(1);
-            //     g_name.Form("proton_from_D2_%f",E1_k);
-            //     gr->SetTitle(g_name);
-            //     mg->Add(gr);
-            //     //gr->SetMinimum(1.9);
-            //     //gr->SetMaximum(2.23);
+            if (ii==0){
 
-            // }else{
-            //     TGraph* gr2 = new TGraph(n3_2, theta_p_arr, E_p_arr);
-            //     gr2->GetXaxis()->SetTitle("#theta(degres)");
-            //     gr2->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
-            //     gr2->SetMarkerColor(2);
-            //     gr2->SetMarkerStyle(21);
-            //     gr2->SetLineColor(2);
-            //     g_name.Form("proton_from_d_%f",E1_k);
-            //     gr2->SetTitle(g_name);
-            //     mg->Add(gr2);
+                if(i4==0){
+                    TGraph* gr = new TGraph(n3_2, theta_p_arr, E_p_arr);
+                    gr->GetXaxis()->SetTitle("#theta(degres)");
+                    gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
+                    gr->SetMarkerColor(1);
+                    gr->SetMarkerStyle(20);
+                    gr->SetLineColor(1);
+                    g_name.Form("proton_from_D2_%f",E1_k);
+                    gr->SetTitle(g_name);
+                    mg->Add(gr);
+                    //gr->SetMinimum(1.9);
+                    //gr->SetMaximum(2.23);
 
-            // }
-                
-            if(i4==0){
-                for (int i5 = 0; i5 < n3_2; i5++){
-                    E_arr_end_D2[i5] = E_p_arr[i5];
+                }else{
+                    TGraph* gr2 = new TGraph(n3_2, theta_p_arr, E_p_arr);
+                    gr2->GetXaxis()->SetTitle("#theta(degres)");
+                    gr2->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
+                    gr2->SetMarkerColor(2);
+                    gr2->SetMarkerStyle(21);
+                    gr2->SetLineColor(2);
+                    g_name.Form("proton_from_d_%f",E1_k);
+                    gr2->SetTitle(g_name);
+                    mg->Add(gr2);
+
                 }
                 
-                
+ 
+
             }else{
-                for (int i5 = 0; i5 < n3_2; i5++){
-                    E_arr_end_d[i5] = E_p_arr[i5];
+                if(i4==1){
+                    TGraph* gr3 = new TGraph(n3_2, theta_p_arr, E_p_arr);
+                    gr3->GetXaxis()->SetTitle("#theta(degres)");
+                    gr3->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
+                    gr3->SetMarkerColor(4);
+                    gr3->SetMarkerStyle(23);
+                    gr3->SetLineColor(4);
+                    g_name.Form("proton_%f",E1_k);
+                    gr3->SetTitle(g_name);
+                    mg->Add(gr3);
+                    //gr->SetMinimum(1.9);
+                    //gr->SetMaximum(2.23);
                 }
-            }
+                
+                
+                TGraph* gr4 = new TGraph(n3_2, theta_T_arr, E_T_arr);
+                gr4->GetXaxis()->SetTitle("#theta(degres)");
+                gr4->GetYaxis()->SetTitle("#E_{T kinetic}(Mev)");
+                
+                if(i4==0){
+                    g_name.Form("Helium_%f",E1_k);
+                    gr4->SetMarkerColor(5);
+                    gr4->SetMarkerStyle(24);
+                    gr4->SetLineColor(5);
+                }else{
+                    g_name.Form("triton_%f",E1_k);
+                    gr4->SetMarkerColor(6);
+                    gr4->SetMarkerStyle(25);
+                    gr4->SetLineColor(6);
+                }
+                
+                gr4->SetTitle(g_name);
+                mg->Add(gr4);
 
-            
+            }
 
         }
 
@@ -233,25 +259,13 @@ void dependence_E_p_from_theta_22(){
         
     }
 
-    for(int i6=0; i6<n3_2; i6++){
-        E_end[i6] = E_arr_end_D2[i6] - E_arr_end_d[i6];
-    }
-    TGraph* gr = new TGraph(n3_2, theta_p_arr, E_end);
-    gr->GetXaxis()->SetTitle("#theta(degres)");
-    gr->GetYaxis()->SetTitle("E_{p kinetic}(Mev)");
-    gr->SetMarkerColor(1);
-    gr->SetMarkerStyle(20);
-    gr->SetLineColor(1);
-    //g_name.Form("proton_from_D2_%f",E1_k);
-    //gr->SetTitle(g_name);
-    mg->Add(gr);
     //c1->cd(1);
-    mg->SetTitle("Difference of energy (in MeV) for two cases: for 3He + (d+n) and 3He + n");
+    mg->SetTitle("Dependence of E_{kin} p from angle (#theta) in lab system for two cases: for p+(d+3H) and p + 3H1");
     mg->GetXaxis()->SetTitle("#it{#theta} (degres)");
     mg->GetYaxis()->SetTitle("E_{kinetic}(Mev)");
     gPad->Modified();
     mg->Draw("ap");
-    //c1->BuildLegend(0.35,0.55,0.65,0.89);
+    c1->BuildLegend(0.35,0.55,0.65,0.89);
 
     //printf("AA %d", mg->GetListOfGraphs()->GetEntries());
     //c1->BuildLegend(0.35,0.55,0.65,0.89);
